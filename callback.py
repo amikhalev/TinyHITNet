@@ -20,7 +20,6 @@ class LogColorDepthMapCallback(pl.Callback):
         outputs,
         batch,
         batch_idx: int,
-        dataloader_idx: int,
     ) -> None:
         if trainer.global_step % self.step != 0 or not trainer.is_global_zero:
             return

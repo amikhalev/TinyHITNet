@@ -72,7 +72,8 @@ if __name__ == "__main__":
 
     trainer = pl.Trainer(
         gpus=-1,
-        accelerator="ddp",
+        accelerator="auto",
+        # strategy="ddp",
         logger=False,
         checkpoint_callback=False,
     )
