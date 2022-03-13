@@ -1,6 +1,7 @@
 from .hit_net_sf import HITNet_SF, HITNetXL_SF
 from .hit_net_kitti import HITNet_KITTI
 from .stereo_net import StereoNet
+from .stereo_net_sep import StereoNetSep
 
 
 def build_model(args):
@@ -12,6 +13,8 @@ def build_model(args):
         model = HITNet_KITTI()
     elif args.model == "StereoNet":
         model = StereoNet()
+    elif args.model == "StereoNetSep":
+        model = StereoNetSep()
     else:
         raise NotImplementedError
 
