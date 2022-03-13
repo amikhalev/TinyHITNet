@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     left = torch.rand(1, 3, 540, 960)
     right = torch.rand(1, 3, 540, 960)
-    model = StereoNet()
+    model = StereoNetSep()
 
     print(model(left, right)["disp"].size())
 
