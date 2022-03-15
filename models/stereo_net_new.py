@@ -20,17 +20,17 @@ def make_cost_volume(left, right, max_disp):
     return cost_volume
 
 
-def conv_3x3(in_c, out_c, s=1, d=1, bias=False):
+def conv_3x3(in_c, out_c, s=1, d=1):
     return nn.Sequential(
-        nn.Conv2d(in_c, out_c, 3, s, d, dilation=d, bias=bias),
+        nn.Conv2d(in_c, out_c, 3, s, d, dilation=d),
         nn.BatchNorm2d(out_c),
         activation(),
     )
 
 
-def conv_1x1(in_c, out_c, bias=False):
+def conv_1x1(in_c, out_c):
     return nn.Sequential(
-        nn.Conv2d(in_c, out_c, 1, bias=bias),
+        nn.Conv2d(in_c, out_c, 1),
         nn.BatchNorm2d(out_c),
         activation(),
     )
@@ -48,9 +48,9 @@ class ResBlock(nn.Module):
         x = self.conv(input)
         return x + input
 
-def conv_3x3_3d(in_c, out_c, s=1, d=1, bias=False):
+def conv_3x3_3d(in_c, out_c, s=1, d=1):
     return nn.Sequential(
-        nn.Conv3d(in_c, out_c, 3, s, d, dilation=d, bias=bias),
+        nn.Conv3d(in_c, out_c, 3, s, d, dilation=d),
         nn.BatchNorm3d(out_c),
         activation(),
     )
@@ -130,15 +130,15 @@ class StereoNetNew(nn.Module):
         d = torch.arange(0, self.max_disp, device=x.device, dtype=x.dtype)
         x = torch.sum(x * d.view(1, -1, 1, 1), dim=1, keepdim=True)
 
-        multi_scale = []
+        multi_scale = [x]
         for refine in self.refine_layer:
             x = refine(x, left_img)
             scale = left_img.size(3) / x.size(3)
-            full_res = F.interpolate(x * scale, left_img.shape[2:])[:, :, :h, :w]
-            multi_scale.append(full_res)
+            multi_scale.append(x * scale)
 
+        disp = F.interpolate(multi_scale[-1], left_img.shape[2:])[:, :, :h, :w]
         return {
-            "disp": multi_scale[-1],
+            "disp": disp,
             "multi_scale": multi_scale,
         }
 
