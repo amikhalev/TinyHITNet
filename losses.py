@@ -53,7 +53,7 @@ def calc_init_loss(cv, target, max_disp, k=1, tile_size=1):
 
 
 def calc_multi_scale_loss(pred, target, max_disp, a=0.8, c=0.5, A=1, tile_size=1):
-    scale = target.size(3) // pred.size(3)
+    scale = int(round(target.size(3) / pred.size(3)))
     scale_disp = max(1, scale // tile_size)
 
     target = target / scale_disp
