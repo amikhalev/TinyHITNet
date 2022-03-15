@@ -133,10 +133,9 @@ class StereoNetNew(nn.Module):
         multi_scale = [x]
         for refine in self.refine_layer:
             x = refine(x, left_img)
-            scale = left_img.size(3) / x.size(3)
-            multi_scale.append(x * scale)
+            multi_scale.append(x)
 
-        disp = F.interpolate(multi_scale[-1], left_img.shape[2:])[:, :, :h, :w]
+        disp = multi_scale[-1][:, :, :h, :w]
         return {
             "disp": disp,
             "multi_scale": multi_scale,
