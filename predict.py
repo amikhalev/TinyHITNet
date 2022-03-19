@@ -19,7 +19,7 @@ class PredictModel(pl.LightningModule):
 
 
 @torch.no_grad()
-def predict(model, lp, rp, width, op):
+def predict(model, lp, rp, width):
     left = cv2.imread(str(lp), cv2.IMREAD_COLOR)
     right = cv2.imread(str(rp), cv2.IMREAD_COLOR)
     if width is not None and width != left.shape[1]:
@@ -42,15 +42,7 @@ def predict(model, lp, rp, width, op):
     disp = torch.clip(disp / 192 * 255, 0, 255).long()
     disp = apply_colormap(disp)
 
-    output = [left, right, disp]
-    # if "slant" in pred:
-    #     dxy = dxy_colormap(pred["slant"][-1][1])
-    #     output.append(dxy)
-
-    output = torch.cat(output, dim=0)
-    torchvision.utils.save_image(output, op, nrow=1)
-    return
-
+    return [left, right, disp]
 
 if __name__ == "__main__":
     import cv2
@@ -83,7 +75,8 @@ if __name__ == "__main__":
 
         for ids, (lp, rp) in enumerate(zip(lps, rps)):
             op = Path(args.output) / f"{lp.stem}_{ids}.png"
-            predict(model, lp, rp, args.width, op)
+            output = predict(model, lp, rp, args.width)
+            torchvision.utils.save_image(torch.cat(output, dim=0), op, nrow=1)
             print("output: {}".format(op))
     else:
         lp = Path(args.images[0])
@@ -91,5 +84,6 @@ if __name__ == "__main__":
         op = Path(args.output)
         if op.is_dir():
             op = op / lp.name
-        predict(model, lp, rp, args.width, op)
+        output = predict(model, lp, rp, args.width, op)
+        torchvision.utils.save_image(torch.cat(output, dim=0), op, nrow=1)
         print("output: {}".format(op))
