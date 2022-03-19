@@ -5,6 +5,7 @@ import pytorch_lightning as pl
 import cv2
 from colormap import apply_colormap, dxy_colormap
 
+from dataset.utils import np2torch
 from models import build_model
 
 
@@ -50,8 +51,6 @@ if __name__ == "__main__":
     import argparse
     import torchvision
     from pathlib import Path
-
-    from dataset.utils import np2torch
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--images", nargs=2, required=True)
