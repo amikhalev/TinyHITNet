@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
 import cv2
+from colormap import apply_colormap, dxy_colormap
 
 from models import build_model
 
@@ -46,13 +47,11 @@ def predict(model, lp, rp, width):
     return [left, right, disp]
 
 if __name__ == "__main__":
-    import cv2
     import argparse
     import torchvision
     from pathlib import Path
 
     from dataset.utils import np2torch
-    from colormap import apply_colormap, dxy_colormap
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--images", nargs=2, required=True)
